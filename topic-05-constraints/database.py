@@ -13,9 +13,10 @@ def initialize(database_file):
 def get_pets():
     cursor = connection.cursor()
     cursor.execute("""
-        SELECT pet.id, pet.name, pet.age, pet.owner, kind.name as kind_name, kind.food, kind.sound 
+        SELECT pet.id, pet.name, pet.age, owner.name as owner, kind.name as kind_name, kind.food, kind.sound 
         FROM pet 
         JOIN kind ON pet.kind_id = kind.id
+        JOIN owner ON pet.owner_id = owner.id
     """)
     pets = cursor.fetchall()
     pets = [dict(pet) for pet in pets]
@@ -32,13 +33,22 @@ def get_kinds():
         print(kind)
     return kinds
 
+def get_owners():
+    cursor = connection.cursor()
+    cursor.execute("""select * from owner""")
+    owners = cursor.fetchall()
+    owners = [dict(owner) for owner in owners]
+    for owner in owners:
+        print(owners)
+    return owners
+
 def get_pet(id):
     cursor = connection.cursor()
     cursor.execute(f"""select * from pet where id = ?""", (id,))
     rows = cursor.fetchall()
     try:
-        (id, name, xtype, age, owner) = rows[0]
-        data = {"id": id, "name": name, "kind": kind, "age": age, "owner": owner}
+        (id, name, kind_id, age, owner_id) = rows[0]
+        data = {"id": id, "name": name, "kind_id": kind_id, "age": age, "owner_id": owner_id}
 
         return data
     except:
@@ -56,6 +66,18 @@ def get_kind(id):
     except:
         return "Data not found."
 
+def get_owner(id):
+    cursor = connection.cursor()
+    cursor.execute(f"""select * from owner where id = ?""", (id,))
+    rows = cursor.fetchall()
+    try:
+        (id, name, address) = rows[0]
+        data = {"id": id, "name": name, "address": address}
+
+        return data
+    except:
+        return "Data not found"
+
 def create_pet(data):
     try:
         data["age"] = int(data["age"])
@@ -63,8 +85,8 @@ def create_pet(data):
         data["age"] = 0
     cursor = connection.cursor()
     cursor.execute(
-        """insert into pet(name, age, kind_id, owner) values (?,?,?,?)""",
-        (data["name"], data["age"], data["kind_id"], data["owner"]),
+        """insert into pet(name, age, kind_id, owner_id) values (?,?,?,?)""",
+        (data["name"], data["age"], data["kind_id"], data["owner_id"]),
     )
     connection.commit()
 
@@ -73,6 +95,14 @@ def create_kind(data):
     cursor.execute(
         """insert into kind(name, food, sound) values (?,?,?)""",
         (data["name"], data["food"], data["sound"]),
+    )
+    connection.commit()
+
+def create_owner(data):
+    cursor = connection.cursor()
+    cursor.execute(
+        """insert into owner(name, address) values (?,?)""",
+        (data["name"], data["address"])
     )
     connection.commit()
 
@@ -87,8 +117,8 @@ def update_pet(id, data):
         data["age"] = 0
     cursor = connection.cursor()
     cursor.execute(
-        """update pet set name=?, age=?, type=?, owner=? where id=?""",
-        (data["name"], data["age"], data["type"], data["owner"], id),
+        """update pet set name=?, age=?, kind_id=?, owner_id=? where id=?""",
+        (data["name"], data["age"], data["kind_id"], data["owner_id"], id),
     )
     connection.commit()
 
@@ -97,6 +127,14 @@ def update_kind(id, data):
     cursor.execute(
         """update kind set name=?, food=?, sound=? where id=?""",
         (data["name"], data["food"], data["sound"], id),
+    )
+    connection.commit()
+
+def update_owner(id, data):
+    cursor = connection.cursor()
+    cursor.execute(
+        """update owner set name=?, address=? where id=?""",
+        (data["name"], data["address"], id)
     )
     connection.commit()
 
@@ -110,15 +148,21 @@ def delete_kind(id):
     cursor.execute(f"""delete from kind where id = ?""", (id,))
     connection.commit()
 
+def delete_owner(id):
+    cursor = connection.cursor()
+    cursor.execute(f"""delete from owner where id = ?""", (id,))
+    connection.commit()
+
 def setup_test_database():
     initialize("test_pets.db")
     cursor = connection.cursor()
     cursor.execute("drop table if exists pet")
     cursor.execute("drop table if exists kind")
+    cursor.execute("drop table if exists owner")
     cursor.execute(
             """
             create table if not exists kind (
-                id integer primary key autoincrement,
+                id integer primary key autoincrement not null,
                 name text not null,
                 food text,
                 sound text
@@ -146,26 +190,48 @@ def setup_test_database():
     cursor = connection.cursor()
     cursor.execute(
         """
-        create table if not exists pet (
-            id integer primary key autoincrement,
+        create table if not exists owner (
+            id integer primary key autoincrement not null,
             name text not null,
-            kind_id integer,
-            age integer,
-            owner text
+            address text
         )
     """
     )
     connection.commit()
+    cursor.executemany("""insert into owner(name, address) values (?,?)""",
+                   [("Greg", "1365 Maple Ave."), ("David", "13 Elm St.")]
+                   )
+    connection.commit()
+    cursor.connection.cursor()
+    cursor.execute(
+        """
+        create table if not exists pet (
+            id integer primary key autoincrement,
+            name text not null,
+            age integer,
+            kind_id integer not null,
+            owner_id integer not null,
+            foreign key (kind_id) references kind(id) on delete RESTRICT on update CASCADE,
+            foreign key (owner_id) references owner(id) on delete RESTRICT on update CASCADE
+        )
+    """
+    )
+    connection.commit()
+    cursor.execute("select id from owner where name='Greg'")
+    greg_id = cursor.fetchone()["id"]
+    cursor.execute("select id from owner where name='David'")
+    david_id = cursor.fetchone()["id"]
     pets = [
-        {"name": "dorothy", "kind_id": 1, "age": 9, "owner": "greg"},
-        {"name": "suzy", "kind_id": 1, "age": 9, "owner": "greg"},
-        {"name": "casey", "kind_id": 2, "age": 9, "owner": "greg"},
-        {"name": "heidi", "kind_id": 2, "age": 15, "owner": "david"},
+        {"name": "dorothy", "kind_id": 1, "age": 9, "owner_id": greg_id},
+        {"name": "suzy", "kind_id": 1, "age": 9, "owner_id": greg_id}, 
+        {"name": "casey", "kind_id": 2, "age": 9, "owner_id": greg_id},
+        {"name": "heidi", "kind_id": 2, "age": 15, "owner_id": david_id},
     ]
     for pet in pets:
         create_pet(pet)
     pets = get_pets()
     assert len(pets) == 4
+    
 
 def test_get_pets():
     print("testing get_pets")

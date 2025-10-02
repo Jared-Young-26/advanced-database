@@ -79,3 +79,23 @@ def post_kind_update(id):
     data = dict(request.form)
     database.update_kind(id, data)
     return redirect(url_for("get_kind_list"))
+
+# @app.route("/owner/list", method=["GET"])
+# def get_owner_list():
+#     return render_template("owner_list.html")
+
+# @app.route("/owner/create", method=["GET"])
+# def get_owner_create():
+#     return render_template("owner_create.html")
+
+# @app.route("/owner/create", method=["POST"])
+# def post_owner_create():
+#     return render_template("owner_create.html")
+
+# @app.route("/owner/update", method=["GET"])
+# def get_owner_update():
+#     return render_template("owner_update.html")
+
+# @app.route("/owner/update", method=["POST"])
+# def post_owner_update():
+#     return render_template("owner_update.html")

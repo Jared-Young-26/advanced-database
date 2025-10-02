@@ -1,0 +1,4 @@
+1. Create the Database for Owners in database.py
+2. Write the test case for Owners table
+3. Get the data to be retrieved in a rendered template
+4. Set up routes to the template pages from the main index 
