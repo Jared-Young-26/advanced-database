@@ -258,9 +258,23 @@ def test_get_kinds():
     assert type(kind["id"]) is int
     assert type(kind["name"]) is str
 
+def test_get_owners():
+    print("testing get_owners")
+    owners = get_owners()
+    assert type(owners) is list
+    assert len(owners) > 0
+    assert type(owners[0]) is dict
+    owner = owners[0]
+    for field in ["id", "name", "address"]:
+        assert field in owner, f"Field {field} missing from {owner}"
+    assert type(owner["id"]) is int
+    assert type(owner["name"]) is str
+    assert type(owner["address"]) is str
+
 if __name__ == "__main__":
     setup_test_database()
     test_get_pets()
     test_get_kinds()
+    test_get_owners()
     test_create_pet()
     print("done.")
