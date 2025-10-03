@@ -1,18 +1,20 @@
 <html>
-    <h1>Owner List:</h1>
+    <h1>Pet List:</h1>
     <table>
         <tr>
             <th>ID</th>
             <th>Name</th>
-            <th>Address</th>
+            <th>Type</th>
+            <th>Age</th>
+            <th>Owner</th>
         </tr>
-        {% for owner in owners %}
+        {% for pet in pets %}
         <tr>
-            {% for key in owner.keys() %}
-            <td>{{ owner[key] }}</td>
+            {% for key in pet.keys() %}
+            <td>{{ pet[key] }}</td>
             {% endfor %}
-            <td><a href="/owner/delete/{{owner['id']}}">Delete</a></td>
-            <td><a href="/owner/update/{{owner['id']}}">Update</a></td>
+            <td><a href="/pet/delete/{{pet['id']}}">Delete</a></td>
+            <td><a href="/pet/update/{{pet['id']}}">Update</a></td>
         </tr>
         {% endfor %}
     </table>

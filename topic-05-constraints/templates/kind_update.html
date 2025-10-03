@@ -1,7 +1,7 @@
 <html>
     <head></head>
     <body>
-        This is the update template. 
+       <h2>Updating: {{data['name']}}</h2>
         <form action="/kind/update/{{data['id']}}" method="post">
             <hr/>
             <p>Kind Name:<input name="name" value="{{data['name']}}"/></p>

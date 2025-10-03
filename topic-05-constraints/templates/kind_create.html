@@ -1,15 +1,19 @@
 <html>
     <head></head>
     <body>
-        This is the kind create template. 
+        <h2>Create a New Kind</h2>
         <form action="/kind/create" method="post">
             <hr/>
             <p>Kind Name:<input name="name"/></p>
             <p>Food:<input name="food"/></p>
             <p>Sound:<input name="sound"/></p>
             <hr/>
-            <button type="submit">Create</button>
-            <a href="/kind/list">Cancel</a>
+            <button type="submit">Submit</button>
+            <a href="/pet/create"><button type="button">Create a Pet</button></a>
+            <a href="/owner/create"><button type="button">Create an Owner</button></a>
+            <a href="/pet/list"><button type="button">Show Pets</button></a>
+            <a href="/kind/list"><button type="button">Show Kinds</button></a>
+            <a href="/owner/list"><button type="button">Show Owners</button></a>
             <hr/>
         </form>
     </body>

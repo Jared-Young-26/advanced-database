@@ -9,10 +9,10 @@ database.initialize("pets.db")
 app = Flask(__name__)
 
 @app.route("/", methods=["GET"]) 
-@app.route("/list", methods=["GET"])
+@app.route("/pet/list", methods=["GET"])
 def get_list():
     pets = database.get_pets()
-    return render_template("list.html", pets=pets)     
+    return render_template("pet_list.html", pets=pets)     
 
 
 @app.route("/kind", methods=["GET"])
@@ -22,30 +22,31 @@ def get_kind_list():
     return render_template("kind_list.html", kinds=kinds)
 
 
-@app.route("/create", methods=["GET"])
+@app.route("/pet/create", methods=["GET"])
 def get_create():
     kinds = database.get_kinds()
-    print("KINDS = ",kinds)
-    return render_template("create.html", kinds=kinds)     
+    owners = database.get_owners()
+    #print("KINDS = ",kinds)
+    return render_template("pet_create.html", kinds=kinds, owners=owners)     
 
-@app.route("/create", methods=["POST"])
+@app.route("/pet/create", methods=["POST"])
 def post_create():
     data = dict(request.form)
     print("DATA=",data)
     database.create_pet(data)
     return redirect(url_for("get_list"))  
 
-@app.route("/delete/<id>", methods=["GET"])
+@app.route("/pet/delete/<id>", methods=["GET"])
 def get_delete(id):
     database.delete_pet(id)
     return redirect(url_for("get_list"))  
 
-@app.route("/update/<id>", methods=["GET"])
+@app.route("/pet/update/<id>", methods=["GET"])
 def get_update(id):
     data = database.get_pet(id)
-    return render_template("update.html",data=data)
+    return render_template("pet_update.html",data=data)
 
-@app.route("/update/<id>", methods=["POST"])
+@app.route("/pet/update/<id>", methods=["POST"])
 def post_update(id):
     data = dict(request.form)
     database.update_pet(id, data)
@@ -80,22 +81,37 @@ def post_kind_update(id):
     database.update_kind(id, data)
     return redirect(url_for("get_kind_list"))
 
-# @app.route("/owner/list", method=["GET"])
-# def get_owner_list():
-#     return render_template("owner_list.html")
+@app.route("/owner/list", methods=["GET"])
+def get_owner_list():
+    owners = database.get_owners()
+    return render_template("owner_list.html", owners=owners)
 
-# @app.route("/owner/create", method=["GET"])
-# def get_owner_create():
-#     return render_template("owner_create.html")
+@app.route("/owner/create", methods=["GET"])
+def get_owner_create():
+    return render_template("owner_create.html")
 
-# @app.route("/owner/create", method=["POST"])
-# def post_owner_create():
-#     return render_template("owner_create.html")
+@app.route("/owner/create", methods=["POST"])
+def post_owner_create():
+    data = dict(request.form)
+    database.create_owner(data)
+    return redirect(url_for("get_owner_list"))
 
-# @app.route("/owner/update", method=["GET"])
-# def get_owner_update():
-#     return render_template("owner_update.html")
+@app.route("/owner/update/<id>", methods=["GET"])
+def get_owner_update(id):
+    data = database.get_owner(id)
+    print("DATA=",data)
+    return render_template("owner_update.html", data=data)
 
-# @app.route("/owner/update", method=["POST"])
-# def post_owner_update():
-#     return render_template("owner_update.html")
+@app.route("/owner/update/<id>", methods=["POST"])
+def post_owner_update(id):
+    data = dict(request.form)
+    database.update_owner(id, data)
+    return redirect(url_for("get_owner_list"))
+
+@app.route("/owner/delete/<id>", methods=["GET"])
+def get_owner_delete(id):
+    try:
+        database.delete_owner(id)
+    except Exception as e:
+        return render_template("error.html", error_text=str(e))
+    return redirect(url_for("get_owner_list"))

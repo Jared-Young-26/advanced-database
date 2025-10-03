@@ -8,12 +8,52 @@ def initialize(database_file):
     connection = sqlite3.connect(database_file, check_same_thread=False)
     connection.execute("PRAGMA foreign_keys = 1")
     connection.row_factory = sqlite3.Row
+    setup_database()
 
+def setup_database():
+    cursor = connection.cursor()
+    cursor.execute(
+        """
+        create table if not exists kind (
+            id integer primary key autoincrement not null,
+            name text not null,
+            food text,
+            sound text
+        )
+        """
+    )
+    connection.commit()
+    cursor = connection.cursor()
+    cursor.execute(
+        """
+        create table if not exists owner (
+            id integer primary key autoincrement not null,
+            name text not null,
+            address text
+        )
+        """
+    )
+    connection.commit()
+    cursor = connection.cursor()
+    cursor.execute(
+        """
+        create table if not exists pet (
+            id integer primary key autoincrement,
+            name text not null,
+            age integer,
+            kind_id integer not null,
+            owner_id integer not null,
+            foreign key (kind_id) references kind(id) on delete RESTRICT on update CASCADE,
+            foreign key (owner_id) references owner(id) on delete RESTRICT on update CASCADE
+        )
+        """
+    )
+    connection.commit()
 
 def get_pets():
     cursor = connection.cursor()
     cursor.execute("""
-        SELECT pet.id, pet.name, pet.age, owner.name as owner, kind.name as kind_name, kind.food, kind.sound 
+        SELECT pet.id, pet.name, pet.age, kind.name as kind_name, kind.food, kind.sound, owner.name as owner
         FROM pet 
         JOIN kind ON pet.kind_id = kind.id
         JOIN owner ON pet.owner_id = owner.id
@@ -39,7 +79,7 @@ def get_owners():
     owners = cursor.fetchall()
     owners = [dict(owner) for owner in owners]
     for owner in owners:
-        print(owners)
+        print(owner)
     return owners
 
 def get_pet(id):
@@ -108,7 +148,6 @@ def create_owner(data):
 
 def test_create_pet():
     pass
-
 
 def update_pet(id, data):
     try:
@@ -232,7 +271,6 @@ def setup_test_database():
     pets = get_pets()
     assert len(pets) == 4
     
-
 def test_get_pets():
     print("testing get_pets")
     pets = get_pets()
@@ -278,3 +316,9 @@ if __name__ == "__main__":
     test_get_owners()
     test_create_pet()
     print("done.")
+
+
+
+
+    
+    
