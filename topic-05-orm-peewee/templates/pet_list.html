@@ -1,19 +1,20 @@
 <html>
-    <h1>Kind List:</h1>
+    <h1>Pet List:</h1>
     <table>
         <tr>
             <th>ID</th>
             <th>Name</th>
-            <th>Food</th>
-            <th>Sound</th>
+            <th>Type</th>
+            <th>Age</th>
+            <th>Owner</th>
         </tr>
-        {% for kind in kinds %}
+        {% for pet in pets %}
         <tr>
-            {% for key in kind.keys() %}
-            <td>{{ kind[key] }}</td>
+            {% for key in pet.keys() %}
+            <td>{{ pet[key] }}</td>
             {% endfor %}
-            <td><a href="/kind/delete/{{kind['id']}}">Delete</a></td>
-            <td><a href="/kind/update/{{kind['id']}}">Update</a></td>
+            <td><a href="/pet/delete/{{pet['id']}}">Delete</a></td>
+            <td><a href="/pet/update/{{pet['id']}}">Update</a></td>
         </tr>
         {% endfor %}
     </table>

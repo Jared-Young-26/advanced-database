@@ -1,0 +1,31 @@
+<html>
+    <head></head>
+    <body>
+        <h2>Create a New Pet</h2>
+        <form action="/pet/create" method="POST">
+            <hr/>
+            <p>Animal Name:<input name="name"/></p>
+            <p>Age:<input name="age"/></p>
+
+            <p>Kind_ID:<select name="kind_id">
+                {% for kind in kinds %}
+                <option value="{{kind['id']}}">{{kind['name']}}</option>
+                {% endfor %}
+            </select></p>
+
+            <p>Owner_ID:<select name="owner_id">
+                {% for owner in owners %}
+                <option value="{{owner['id']}}"/>{{owner['name']}}</option>
+                {% endfor %}
+            </select></p>
+            <hr/>
+            <button type="submit">Submit</button>
+            <a href="/kind/create"><button type="button">Create a Kind</button></a>
+            <a href="/owner/create"><button type="button">Create an Owner</button></a>
+            <a href="/pet/list"><button type="button">Show Pets</button></a>
+            <a href="/kind/list"><button type="button">Show Kinds</button></a>
+            <a href="/owner/list"><button type="button">Show Owners</button></a>
+            <hr/>
+        </form>
+    </body>
+</html>

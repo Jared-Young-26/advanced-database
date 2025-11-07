@@ -1,19 +1,18 @@
 <html>
-    <h1>Kind List:</h1>
+    <h1>Owner List:</h1>
     <table>
         <tr>
             <th>ID</th>
             <th>Name</th>
-            <th>Food</th>
-            <th>Sound</th>
+            <th>Address</th>
         </tr>
-        {% for kind in kinds %}
+        {% for owner in owners %}
         <tr>
-            {% for key in kind.keys() %}
-            <td>{{ kind[key] }}</td>
+            {% for key in owner.keys() %}
+            <td>{{ owner[key] }}</td>
             {% endfor %}
-            <td><a href="/kind/delete/{{kind['id']}}">Delete</a></td>
-            <td><a href="/kind/update/{{kind['id']}}">Update</a></td>
+            <td><a href="/owner/delete/{{owner['id']}}">Delete</a></td>
+            <td><a href="/owner/update/{{owner['id']}}">Update</a></td>
         </tr>
         {% endfor %}
     </table>
