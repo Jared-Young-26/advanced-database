@@ -1,28 +1,36 @@
 <html>
-    <h1>Pet List:</h1>
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Age</th>
-            <th>Owner</th>
-        </tr>
-        {% for pet in pets %}
-        <tr>
-            {% for key in pet.keys() %}
-            <td>{{ pet[key] }}</td>
+    <head></head>
+    <body>
+        <h1>Pet List:</h1>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Color</th>   <!-- NEW -->
+                <th>Type</th>
+                <th>Age</th>
+                <th>Owner</th>
+                <th colspan="2">Actions</th>
+            </tr>
+            {% for pet in pets %}
+            <tr>
+                <td>{{ pet['id'] }}</td>
+                <td>{{ pet['name'] }}</td>
+                <td>{{ pet.get('color', '') }}</td>      <!-- NEW -->
+                <td>{{ pet['kind_name'] }}</td>
+                <td>{{ pet['age'] }}</td>
+                <td>{{ pet['owner'] }}</td>
+                <td><a href="/pet/delete/{{pet['id']}}">Delete</a></td>
+                <td><a href="/pet/update/{{pet['id']}}">Update</a></td>
+            </tr>
             {% endfor %}
-            <td><a href="/pet/delete/{{pet['id']}}">Delete</a></td>
-            <td><a href="/pet/update/{{pet['id']}}">Update</a></td>
-        </tr>
-        {% endfor %}
-    </table>
-    <hr/>
-    <a href="/pet/create"><button type="button">Create a Pet</button></a>
-    <a href="/kind/create"><button type="button">Create a Kind</button></a>
-    <a href="/owner/create"><button type="button">Create an Owner</button></a>
-    <a href="/pet/list"><button type="button">Show Pets</button></a>
-    <a href="/kind/list"><button type="button">Show Kinds</button></a>
-    <a href="/owner/list"><button type="button">Show Owners</button></a>
+        </table>
+        <hr/>
+        <a href="/pet/create"><button type="button">Create a Pet</button></a>
+        <a href="/kind/create"><button type="button">Create a Kind</button></a>
+        <a href="/owner/create"><button type="button">Create an Owner</button></a>
+        <a href="/pet/list"><button type="button">Show Pets</button></a>
+        <a href="/kind/list"><button type="button">Show Kinds</button></a>
+        <a href="/owner/list"><button type="button">Show Owners</button></a>
+    </body>
 </html>

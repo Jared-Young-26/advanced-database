@@ -4,19 +4,33 @@
         <h2>Updating: {{data['name']}}</h2> 
         <form action="/pet/update/{{data['id']}}" method="post">
             <hr/>
-            <p>Animal Name:<input name="name" value="{{data['name']}}"/></p>
-            <p>Age:<input name="age" value="{{data['age']}}"/></p>
-            <p>Kind_ID:<select name="kind_id">
-                {% for kind in kinds %}
-                <option value="{{kind['id']}}">{{kind['name']}}</option>
-                {% endfor %}
-            </select></p>
+            <p>Animal Name: <input name="name" value="{{data['name']}}"/></p>
+            <p>Age: <input name="age" value="{{data['age']}}"/></p>
 
-            <p>Owner_ID:<select name="owner_id">
-                {% for owner in owners %}
-                <option value="{{owner['id']}}"/>{{owner['name']}}</option>
-                {% endfor %}
-            </select></p>
+            <!-- NEW: Color field -->
+            <p>Color: <input name="color" value="{{ data.get('color', '') }}"/></p>
+
+            <p>Kind_ID:
+                <select name="kind_id">
+                    {% for kind in kinds %}
+                    <option value="{{kind['id']}}"
+                        {% if kind['id'] == data['kind_id'] %}selected{% endif %}>
+                        {{kind['name']}}
+                    </option>
+                    {% endfor %}
+                </select>
+            </p>
+
+            <p>Owner_ID:
+                <select name="owner_id">
+                    {% for owner in owners %}
+                    <option value="{{owner['id']}}"
+                        {% if owner['id'] == data['owner_id'] %}selected{% endif %}>
+                        {{owner['name']}}
+                    </option>
+                    {% endfor %}
+                </select>
+            </p>
             <hr/>
             <button type="submit">Update</button>
             <a href="/pet/list">Cancel</a>

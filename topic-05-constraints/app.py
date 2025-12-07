@@ -4,7 +4,7 @@ import database
 
 # remember to $ pip install flask
 
-database.initialize("pets.db")
+database.initialize("pets_db")
 
 app = Flask(__name__)
 
